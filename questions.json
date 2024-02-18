@@ -1,0 +1,112 @@
+{
+    "questions": [
+      {
+        "question_type": "MCQ",
+        "question_text": "What does 'DOM' stand for in JavaScript?",
+        "options": ["Document Object Model", "Data Object Model", "Dynamic Object Model", "Document Oriented Model"],
+        "correct_answer": "Document Object Model"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "JavaScript is a compiled language.",
+        "correct_answer": false
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "What is the event loop in Node.js?",
+        "correct_answer": "It is a mechanism that handles asynchronous operations in Node.js."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "Which keyword is used to declare variables in JavaScript?",
+        "options": ["var", "let", "const", "variable"],
+        "correct_answer": "var"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "Node.js is single-threaded.",
+        "correct_answer": true
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "Explain the purpose of 'npm' in Node.js.",
+        "correct_answer": "npm (Node Package Manager) is used to manage and install packages (libraries) in Node.js."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "What is the purpose of 'strict mode' in JavaScript?",
+        "options": ["To catch common coding errors and prevent the use of undeclared variables", "To allow loose coding without restrictions", "To optimize code execution", "To make code execution slower"],
+        "correct_answer": "To catch common coding errors and prevent the use of undeclared variables"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "JavaScript is a case-sensitive language.",
+        "correct_answer": true
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "What is a closure in JavaScript?",
+        "correct_answer": "A closure is a function bundled with its lexical environment, allowing it to access variables from its outer (enclosing) scope even after the outer function has finished execution."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "Which of the following is not a primitive data type in JavaScript?",
+        "options": ["string", "number", "boolean", "array"],
+        "correct_answer": "array"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "Node.js is a framework built on top of JavaScript.",
+        "correct_answer": false
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "Explain the role of 'require' in Node.js.",
+        "correct_answer": "'require' is used in Node.js to include external modules (libraries) in the current program."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "What does 'JSON' stand for?",
+        "options": ["JavaScript Object Notation", "Java Source Object Notation", "JavaScript Oriented Notation", "JSON is not an acronym"],
+        "correct_answer": "JavaScript Object Notation"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "JavaScript can be used for both client-side and server-side development.",
+        "correct_answer": true
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "What is the 'this' keyword in JavaScript?",
+        "correct_answer": "'this' refers to the current object in which the code is being executed."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "Which method is used to add an element at the end of an array in JavaScript?",
+        "options": ["push()", "pop()", "shift()", "unshift()"],
+        "correct_answer": "push()"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "Node.js is based on the V8 JavaScript engine.",
+        "correct_answer": true
+      },
+      {
+        "question_type": "SHORT_ANSWER",
+        "question_text": "What is a callback function in JavaScript?",
+        "correct_answer": "A callback function is a function passed as an argument to another function, which will be invoked later."
+      },
+      {
+        "question_type": "MCQ",
+        "question_text": "Which statement is used to exit a loop prematurely in JavaScript?",
+        "options": ["break", "return", "continue", "exit"],
+        "correct_answer": "break"
+      },
+      {
+        "question_type": "TRUE_FALSE",
+        "question_text": "JavaScript has a built-in 'sleep' function for delaying execution.",
+        "correct_answer": false
+      }
+    ]
+  }
+  
