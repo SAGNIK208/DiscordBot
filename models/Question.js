@@ -1,8 +1,4 @@
-const QuestionType = {
-    TRUE_FALSE: 'TRUE_FALSE',
-    SHORT_ANSWER: 'SHORT_ANSWER',
-    MCQ: 'MCQ',
-  };
+const {QuestionType} = require('../constants/constants');
   
   class Question {
     constructor(id, type, text, options, correctAnswer) {
