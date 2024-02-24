@@ -6,3 +6,5 @@ class LeaderboardRepository{
         this.dataProvider.updateLeaderboard(leaderboardEntry);
     }
 }
+
+module.exports = LeaderboardRepository;
