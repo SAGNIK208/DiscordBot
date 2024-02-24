@@ -19,6 +19,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.4",
+    "googleapis": "^133.0.0",
     "spacy-nlp": "^1.0.11"
   }
 }

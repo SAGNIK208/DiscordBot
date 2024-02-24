@@ -1,8 +1,8 @@
-const {QuestionType} = require('../constants/constants');
+const {QUESTION_TYPE} = require('../constants/constants');
   
   class Question {
     constructor(id, type, text, options, correctAnswer) {
-      if (Object.values(QuestionType).includes(type)) {
+      if (Object.values(QUESTION_TYPE).includes(type)) {
         this.type = type;
       }else{
         //For invalid question just ignore the question

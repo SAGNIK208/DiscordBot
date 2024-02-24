@@ -1,4 +1,4 @@
-const { QuizQuestionLimit } = require("../constants/constants");
+const { QUIZ_QUESTION_LIMIT } = require("../constants/constants");
 const questionsData = require('../data/questions.json');
 
 class Quiz {
@@ -26,7 +26,7 @@ class Quiz {
   }
 
   isQuizOver(){
-    return this._askedQuestionsSet.size() > Math.min(questionsData.questions.length,QuizQuestionLimit);
+    return this._askedQuestionsSet.size() > Math.min(questionsData.questions.length,QUIZ_QUESTION_LIMIT);
   }
 }
 
