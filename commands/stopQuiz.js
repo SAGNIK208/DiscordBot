@@ -1,13 +1,13 @@
 const GoogleSheetsRepository = require('../repository/googleSheetRepo');
-const config = require('../config');
+const config = require('../config/config');
 const LeaderboardRepository = require('../repository/LeaderBoardRepository');
 
 let repository;
 
-if (config.repositoryType === 'googleSheets') {
+if (config.REPOSITORY_TYPE === 'googleSheets') {
   repository = new LeaderboardRepository(new GoogleSheetsRepository());
 }
-export const stopQuiz = (message,quiz,partcipant)=>{
+module.exports.stopQuiz = (message,quiz,partcipant)=>{
     repository.updateLeaderboard(partcipant);
     quiz.initialize();
     message.channel.send("Quiz has ended");

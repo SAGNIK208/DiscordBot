@@ -1,12 +1,17 @@
-const Discord = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const {startQuiz} = require('./commands/startQuiz');
 const {stopQuiz} = require('./commands/stopQuiz');
 const {evaluateUserResponse} = require('./services/userResponseService');
 const LeaderBoardEntry = require('./models/LeaderBoardEntry');
 
-
-const client = new Discord.Client();
+const client = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildEmojisAndStickers
+    ],
+  });
 const participants = new Map();
 
 try{
@@ -44,4 +49,4 @@ try{
 }  
 
 
-client.login('YOUR_BOT_TOKEN');
+client.login(process.env.DISCORD_TOKEN);

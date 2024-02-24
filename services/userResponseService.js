@@ -1,5 +1,5 @@
 const spacyNLP = require("spacy-nlp");
-const nlp = spacyNLP.load("en_core_web_sm-3.0.0");
+const { load } = require("spacy-nlp");
 const { SHORT_ANSWER_THRESHOLD, QUESTION_TYPE } = require("../constants/constants");
 
 function evaluateUserResponse(partcipant,question, message) {
@@ -47,6 +47,7 @@ async function evaluateMCQQuestions(expectedAnswer,message){
 }
 async function evaluateShortAnswerQuestions(expectedAnswer,message) {
 try{ 
+  const nlp = await load("en_core_web_sm-3.0.0");  
   const actualAnswer = message.content().trim();
   const doc1 = await nlp(expectedAnswer);
   const doc2 = await nlp(actualAnswer);

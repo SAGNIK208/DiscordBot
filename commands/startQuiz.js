@@ -1,8 +1,7 @@
-import { QUESTION_TYPE } from '../constants/constants';
-
+const {QUESTION_TYPE} = require('../constants/constants');
 const {getRandomQuestion} = require('../services/questionService');
 const {stopQuiz} = require('./stopQuiz');
-export const startQuiz = (message,quiz) => {
+module.exports.startQuiz = (message,quiz) => {
     
     if(quiz.isQuizOver()){
         message.channel.send("Quiz is alredy over please start a new quiz");

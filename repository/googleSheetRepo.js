@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const credentials = require('../credentials/credentials.json');
 const sheets = google.sheets({ version: 'v4', auth: credentials });
-const {SPREADSHEET_ID,RANGE,SHEET_NAME} = require("../constants/constants");
+const {SPREADSHEET_ID,RANGE,SHEET_NAME} = require("../config/config");
 
 const spreadsheetId = SPREADSHEET_ID;
 const sheetName =  SHEET_NAME;
