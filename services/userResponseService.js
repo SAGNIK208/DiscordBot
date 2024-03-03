@@ -1,43 +1,62 @@
-const spacyNLP = require("spacy-nlp");
-const { load } = require("spacy-nlp");
+const nlp = require('compromise');
 const { SHORT_ANSWER_THRESHOLD, QUESTION_TYPE } = require("../constants/constants");
+const { startQuiz } = require('../commands/startQuiz');
 
-function evaluateUserResponse(partcipant,question, message) {
+async function evaluateUserResponse(participants,quiz, message,participant) {
   let isCorrect = false;
+  let question = quiz.currentQuestion;
   switch(question.type){
     case QUESTION_TYPE.TRUE_FALSE :
-        isCorrect = evaluateTrueFalseQuestions(question.correctAnswer,message);
+        isCorrect = await evaluateTrueFalseQuestions(question.correctAnswer,message,participant.id);
         break;
     case QUESTION_TYPE.MCQ :
-        isCorrect = evaluateMCQQuestions(question.options.indexOf(question.correctAnswer),message);
+        isCorrect = await evaluateMCQQuestions(question.options.indexOf(question.correctAnswer),message,quiz,participant.id);
         break;
     case QUESTION_TYPE.SHORT_ANSWER :
-        isCorrect = evaluateShortAnswerQuestions(question.correctAnswer,message);
+        // isCorrect = evaluateShortAnswerQuestions(question.correctAnswer.toLowerCase().trim(),message);
+        isCorrect = true;
         break;        
   }
-  partcipant.updateScore(isCorrect);
+  if(!isCorrect){
+    message.channel.send(`Correct Answer is ${question.correctAnswer}`)
+  }
+  else{
+    message.channel.send(`Congratulations your answer is correct`);
+  }
+  participant.updateScore(isCorrect);
+  startQuiz(message,quiz,true,participants,participant);
 }
-async function evaluateTrueFalseQuestions(expectedAnswer,message){
+function evaluateTrueFalseQuestions(expectedAnswer,message,userId){
  try{
-    const filter = (reaction, user) => ['👍', '👎'].includes(reaction.emoji.name) && user.id === message.author.id;
-    const collected = await message.awaitReactions(filter, { max: 1, time: 5000, errors: ['time'] });
-    const userReaction = collected.first();
-    return userReaction.emoji.name === (expectedAnswer === 'true' ? '👍' : '👎');
+  const reactions = message.reactions.cache;
+  const timerPromise = () => {
+    const userReaction = reactions.find(reaction => {
+      const users = reaction.users.cache;
+      return users.has(userId);
+    });
+      return (userReaction) ? userReaction.emoji.name:null;
+  }
+    const resultEmoji = timerPromise();
+    return resultEmoji === (expectedAnswer ? '👍' : '👎');
  }catch(error){
     console.error(error);
     return false;
  }
 }
-async function evaluateMCQQuestions(expectedAnswer,message){
+function evaluateMCQQuestions(expectedAnswer,message,quiz,userId){
    try{
-    const filter = (reaction, user) => {
-        const validEmojis = currentQuestion.choices.map((_, index) => `${index + 1}️⃣`);
-        return validEmojis.includes(reaction.emoji.name) && user.id === message.author.id;
-    };
-    const collected = await message.awaitReactions(filter, { max: 1, time: 5000, errors: ['time'] });
-    const userReaction = collected.first();
-    const userChoiceIndex = currentQuestion.choices.findIndex(
-        (_, index) => userReaction.emoji.name === `${index + 1}️⃣`
+    const reactions = message.reactions.cache;
+    const currentQuestion = quiz.currentQuestion;
+    const timerPromise = () => {
+      const userReaction = reactions.find(reaction => {
+        const users = reaction.users.cache;
+        return users.has(userId);
+      });
+        return (userReaction) ? userReaction.emoji.name:null;
+    }
+    const resultEmoji = timerPromise();
+    const userChoiceIndex = currentQuestion.options.findIndex(
+        (_, index) => resultEmoji === `${index + 1}️⃣`
     );
     return userChoiceIndex === expectedAnswer;
    }catch(error){
@@ -47,15 +66,15 @@ async function evaluateMCQQuestions(expectedAnswer,message){
 }
 async function evaluateShortAnswerQuestions(expectedAnswer,message) {
 try{ 
-  const nlp = await load("en_core_web_sm-3.0.0");  
-  const actualAnswer = message.content().trim();
-  const doc1 = await nlp(expectedAnswer);
-  const doc2 = await nlp(actualAnswer);
-
-  const similarity = doc1.similarity(doc2);
-
+  const actualAnswer = message.content.toLowerCase().trim();
+  console.log(nlp);
+  nlp.Vector.ensureLoaded();
+  const vector1 = new nlp.Vector(expectedAnswer);
+  const vector2 = new nlp.Vector(actualAnswer);
+  const similarity = vector1.cosine(vector2);
   return similarity >= SHORT_ANSWER_THRESHOLD;
  }catch(error){
+    console.log("error");
     console.log(error);
     return false;
  }

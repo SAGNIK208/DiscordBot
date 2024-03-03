@@ -1,36 +1,43 @@
 const {QUESTION_TYPE} = require('../constants/constants');
 const {getRandomQuestion} = require('../services/questionService');
 const {stopQuiz} = require('./stopQuiz');
-module.exports.startQuiz = (message,quiz) => {
+module.exports.startQuiz = (message,quiz,nextQuestion,participants,participant) => {
     
     if(quiz.isQuizOver()){
-        message.channel.send("Quiz is alredy over please start a new quiz");
-        stopQuiz(message,quiz);
+        message.channel.send("Quiz is already over please start a new quiz");
+        stopQuiz(message,quiz,participants,participant);
         return;
     }
 
-    if(quiz.getCurrentQuestion()){
+    if(quiz.currentQuestion && !nextQuestion){
         message.channel.send("Quiz is already in progress");
         return;
     }
 
-    quiz.initialize();
+    if(!nextQuestion){
+        quiz.initialize();
+    }
 
-    const newQuestion = null;
+    let newQuestion = null;
 
     do{
         newQuestion = getRandomQuestion();
-    }while(!quiz.hasQuestionBeenAsked(newQuestion));
+    }while(quiz.hasQuestionBeenAsked(newQuestion));
     
-    message.channel.send(`Question: ${newQuestion.text}`);
+    quiz.currentQuestion = newQuestion;
+
+    message.channel.send(`Question: ${newQuestion.text}`).then((currentQuestion)=>{
+        if(newQuestion.type === QUESTION_TYPE.TRUE_FALSE){
+            currentQuestion.react('👍'); // True emoji
+            currentQuestion.react('👎'); // False emoji
+        }else if(newQuestion.type === QUESTION_TYPE.MCQ){
+            newQuestion.options.forEach((choice,index) => {
+                message.channel.send(choice);
+                currentQuestion.react(`${index + 1}️⃣`);
+            });
+        }
+    });
     
-    if(newQuestion.type === QUESTION_TYPE.TRUE_FALSE){
-        message.react('👍'); // True emoji
-        message.react('👎'); // False emoji
-    }else if(newQuestion.type === QUESTION_TYPE.MCQ){
-        newQuestion.options.array.forEach((_,index) => {
-            message.react(`${index + 1}️⃣`);
-        });
-    }
+    
 
 }

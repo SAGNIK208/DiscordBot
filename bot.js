@@ -9,13 +9,20 @@ const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildEmojisAndStickers
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.DirectMessageReactions
     ],
   });
 const participants = new Map();
 
 try{
- client.on('message', (message) => {
+  client.once('ready', () => {
+    console.log('Bot is online!');
+  });
+ client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
   
     const args = message.content.split(/ +/);
@@ -27,21 +34,32 @@ try{
         participant = new LeaderBoardEntry(message.author.id,message.author.username);
         participants.set(message.author.id,participant);
       }
-      startQuiz(message,participant.getQuiz());
+      startQuiz(message,participant.Quiz,false,participants,participant);
     } else if (command === '!stopquiz') {
       let participant = participants.get(message.author.id);
       if(!participant){
-        message.channel.send("Quiz no started yet please type !startquiz");
+        message.channel.send("Quiz not started yet please type !startquiz");
       }else{
-          stopQuiz(message,participant.getQuiz(),participant);
+          stopQuiz(message,participant.Quiz,participants,participant);
       }
     } else {
         let participant = participants.get(message.author.id);
         if(!participant){
-          message.channel.send("Quiz no started yet please type !startquiz");
+          message.channel.send("Quiz not started yet please type !startquiz");
         }else{
-            evaluateUserResponse(participant,participant.getQuiz(),message);
+            await evaluateUserResponse(participants,participant.Quiz,message,participant);
         }
+    }
+  });
+
+  client.on('messageReactionAdd',async (reaction,user)=>{
+    if(user.bot) return;
+    const message = reaction.message;
+    let participant = participants.get(user.id);
+    if(!participant){
+      message.channel.send("Quiz not started yet please type !startquiz");
+    }else{
+        await evaluateUserResponse(participants,participant.Quiz,message,participant);
     }
   });
 }catch(error){

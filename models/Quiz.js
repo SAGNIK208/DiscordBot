@@ -26,7 +26,7 @@ class Quiz {
   }
 
   isQuizOver(){
-    return this._askedQuestionsSet.size() > Math.min(questionsData.questions.length,QUIZ_QUESTION_LIMIT);
+    return this._askedQuestionsSet.size >= Math.min(questionsData.questions.length,QUIZ_QUESTION_LIMIT);
   }
 }
 

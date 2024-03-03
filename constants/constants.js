@@ -4,5 +4,5 @@ module.exports.QUESTION_TYPE = {
     SHORT_ANSWER: 'SHORT_ANSWER',
     MCQ: 'MCQ',
   };
-module.exports.QUIZ_QUESTION_LIMIT = 5;
+module.exports.QUIZ_QUESTION_LIMIT = 3;
 
