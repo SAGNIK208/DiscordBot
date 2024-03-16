@@ -21,6 +21,9 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.4",
     "google-auth-library": "^9.6.3",
-    "googleapis": "^133.0.0"
+    "googleapis": "^133.0.0",
+    "natural": "^6.10.5",
+    "pos": "^0.4.2",
+    "synonyms": "^1.0.1"
   }
 }

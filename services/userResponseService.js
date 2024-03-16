@@ -1,6 +1,15 @@
-const nlp = require('compromise');
+const Compromise = require('compromise');
+const natural = require('natural');
+const pos = require('pos');
+const synonyms = require('synonyms');
 const { SHORT_ANSWER_THRESHOLD, QUESTION_TYPE } = require("../constants/constants");
 const { startQuiz } = require('../commands/startQuiz');
+
+function jaccardSimilarity(set1, set2) {
+  const intersection = new Set([...set1].filter(x => set2.has(x)));
+  const union = new Set([...set1, ...set2]);
+  return intersection.size / union.size;
+}
 
 async function evaluateUserResponse(participants,quiz, message,participant) {
   let isCorrect = false;
@@ -13,8 +22,7 @@ async function evaluateUserResponse(participants,quiz, message,participant) {
         isCorrect = await evaluateMCQQuestions(question.options.indexOf(question.correctAnswer),message,quiz,participant.id);
         break;
     case QUESTION_TYPE.SHORT_ANSWER :
-        // isCorrect = evaluateShortAnswerQuestions(question.correctAnswer.toLowerCase().trim(),message);
-        isCorrect = true;
+        isCorrect = await evaluateShortAnswerQuestions(question.correctAnswer.toLowerCase().trim(),message);
         break;        
   }
   if(!isCorrect){
@@ -67,17 +75,40 @@ function evaluateMCQQuestions(expectedAnswer,message,quiz,userId){
 async function evaluateShortAnswerQuestions(expectedAnswer,message) {
 try{ 
   const actualAnswer = message.content.toLowerCase().trim();
-  console.log(nlp);
-  nlp.Vector.ensureLoaded();
-  const vector1 = new nlp.Vector(expectedAnswer);
-  const vector2 = new nlp.Vector(actualAnswer);
-  const similarity = vector1.cosine(vector2);
-  return similarity >= SHORT_ANSWER_THRESHOLD;
- }catch(error){
-    console.log("error");
-    console.log(error);
-    return false;
- }
+  const stemmer = natural.PorterStemmer;
+    const tokenizer = new natural.WordTokenizer();
+
+    const stemmedQuestion = stemmer.tokenizeAndStem(expectedAnswer.toLowerCase());
+    const stemmedUserAnswer = stemmer.tokenizeAndStem(actualAnswer.toLowerCase());
+
+   
+    const tagger = new pos.Tagger();
+    const tagsQuestion = tagger.tag(tokenizer.tokenize(expectedAnswer));
+    const tagsUserAnswer = tagger.tag(tokenizer.tokenize(actualAnswer));
+
+    const synonymDictionary = {};
+    const expectedAnswerWords = expectedAnswer.toLowerCase().split(/\W+/);
+
+    for (const word of expectedAnswerWords) {
+      synonymDictionary[word] = synonyms(word) || [word];
+    }
+
+    for (let i = 0; i < stemmedQuestion.length; i++) {
+      if (synonymDictionary[stemmedQuestion[i]] && tagsQuestion[i][1] === 'NN') {
+        stemmedQuestion[i] = synonymDictionary[stemmedQuestion[i]][0]; 
+      }
+    }
+
+    for (let i = 0; i < stemmedUserAnswer.length; i++) {
+      if (synonymDictionary[stemmedUserAnswer[i]] && tagsUserAnswer[i][1] === 'NN') {
+        stemmedUserAnswer[i] = synonymDictionary[stemmedUserAnswer[i]][0];
+      }
+    }
+    const jaccardSim = jaccardSimilarity(new Set(stemmedQuestion), new Set(stemmedUserAnswer));
+    return jaccardSim >= SHORT_ANSWER_THRESHOLD
+  } catch (error) {
+    console.error("Error evaluating answer:", error);
+  }
 }
 
 module.exports = {
