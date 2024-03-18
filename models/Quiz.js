@@ -5,6 +5,7 @@ class Quiz {
   constructor() {
     this._currentQuestion = null;
     this._askedQuestionsSet = new Set();
+    this._timer = null;
   }
 
   initialize() {
@@ -21,8 +22,16 @@ class Quiz {
     this._askedQuestionsSet.add(question.id);
   }
 
+  set timer(timerId){
+    this._timer = timerId;
+  }
+
   hasQuestionBeenAsked(question) {
     return this._askedQuestionsSet.has(question.id);
+  }
+
+  clearTimer(){
+    clearTimeout(this._timer);
   }
 
   isQuizOver(){

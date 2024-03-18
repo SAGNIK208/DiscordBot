@@ -4,7 +4,7 @@ const {stopQuiz} = require('./stopQuiz');
 module.exports.startQuiz = (message,quiz,nextQuestion,participants,participant) => {
     
     if(quiz.isQuizOver()){
-        message.channel.send("Quiz is already over please start a new quiz");
+        // message.channel.send("Quiz is already over please start a new quiz");
         stopQuiz(message,quiz,participants,participant);
         return;
     }
@@ -37,7 +37,9 @@ module.exports.startQuiz = (message,quiz,nextQuestion,participants,participant) 
             });
         }
     });
-    
-    
+    quiz.clearTimer();
+    quiz.timer = setTimeout(()=>{
+        this.startQuiz(message,quiz,true,participants,participant);
+    },10000);
 
 }

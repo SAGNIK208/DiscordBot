@@ -11,9 +11,14 @@ function jaccardSimilarity(set1, set2) {
   return intersection.size / union.size;
 }
 
+function isValidReaction(question1,question2){
+  return question1.includes(question2);
+}
+
 async function evaluateUserResponse(participants,quiz, message,participant) {
   let isCorrect = false;
   let question = quiz.currentQuestion;
+  quiz.clearTimer();
   switch(question.type){
     case QUESTION_TYPE.TRUE_FALSE :
         isCorrect = await evaluateTrueFalseQuestions(question.correctAnswer,message,participant.id);
@@ -36,6 +41,9 @@ async function evaluateUserResponse(participants,quiz, message,participant) {
 }
 function evaluateTrueFalseQuestions(expectedAnswer,message,userId){
  try{
+  if(!message || !userId){
+    return false;
+  }
   const reactions = message.reactions.cache;
   const timerPromise = () => {
     const userReaction = reactions.find(reaction => {
@@ -53,6 +61,9 @@ function evaluateTrueFalseQuestions(expectedAnswer,message,userId){
 }
 function evaluateMCQQuestions(expectedAnswer,message,quiz,userId){
    try{
+    if(!message || !userId || !quiz){
+      return false;
+    }
     const reactions = message.reactions.cache;
     const currentQuestion = quiz.currentQuestion;
     const timerPromise = () => {
@@ -73,7 +84,10 @@ function evaluateMCQQuestions(expectedAnswer,message,quiz,userId){
    }
 }
 async function evaluateShortAnswerQuestions(expectedAnswer,message) {
-try{ 
+try{
+  if(!message){
+    return false;
+  } 
   const actualAnswer = message.content.toLowerCase().trim();
   const stemmer = natural.PorterStemmer;
     const tokenizer = new natural.WordTokenizer();
@@ -112,5 +126,6 @@ try{
 }
 
 module.exports = {
-    evaluateUserResponse
+    evaluateUserResponse,
+    isValidReaction
 }

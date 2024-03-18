@@ -2,7 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const {startQuiz} = require('./commands/startQuiz');
 const {stopQuiz} = require('./commands/stopQuiz');
-const {evaluateUserResponse} = require('./services/userResponseService');
+const {evaluateUserResponse,isValidReaction} = require('./services/userResponseService');
 const LeaderBoardEntry = require('./models/LeaderBoardEntry');
 const { channel } = require('synonyms/dictionary');
 
@@ -80,7 +80,9 @@ try{
       if(!participant){
         message.channel.send("Quiz not started yet please type !startquiz");
       }else{
-          await evaluateUserResponse(participants,participant.Quiz,message,participant);
+          if(isValidReaction(message.content,participant.Quiz?.currentQuestion?.text)){
+            await evaluateUserResponse(participants,participant.Quiz,message,participant);
+          }
       }
     }
   });
