@@ -8,6 +8,7 @@ if (config.REPOSITORY_TYPE === 'googleSheets') {
   repository = new LeaderboardRepository(new GoogleSheetsRepository());
 }
 module.exports.stopQuiz = (message,quiz,participants,participant)=>{
+    quiz.clearTimer();
     repository.updateLeaderboard(participant);
     quiz.initialize();
     message.channel.send("Quiz has ended");

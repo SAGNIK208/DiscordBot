@@ -1,4 +1,4 @@
-const {QUESTION_TYPE} = require('../constants/constants');
+const {QUESTION_TYPE, QUIZ_TIMER} = require('../constants/constants');
 const {getRandomQuestion} = require('../services/questionService');
 const {stopQuiz} = require('./stopQuiz');
 module.exports.startQuiz = (message,quiz,nextQuestion,participants,participant) => {
@@ -40,6 +40,6 @@ module.exports.startQuiz = (message,quiz,nextQuestion,participants,participant) 
     quiz.clearTimer();
     quiz.timer = setTimeout(()=>{
         this.startQuiz(message,quiz,true,participants,participant);
-    },10000);
+    },QUIZ_TIMER);
 
 }

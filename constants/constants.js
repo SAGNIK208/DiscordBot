@@ -5,4 +5,5 @@ module.exports.QUESTION_TYPE = {
     MCQ: 'MCQ',
   };
 module.exports.QUIZ_QUESTION_LIMIT = 3;
+module.exports.QUIZ_TIMER = 20000;
 
